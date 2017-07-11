@@ -1,0 +1,88 @@
+<html>
+<head>
+    <title>Sign Up Page</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>EPC Sign Up</h2>
+
+<form action="./epc_signup" method="post">
+    <!-- show any messages that come back with authentication -->
+    <% if (message.length > 0) { %>
+    <div style="color: red;"><%= message %></div>
+    <% } %>
+    <table>
+        <tr>
+            <td><h3>Personal Details</h3></td>
+        </tr>
+        <tr>
+            <td><label for="username">Username</label></td>
+            <td><input type="text" name="username" id="username"></td>
+        </tr>
+        <tr>
+            <td><label for="email_id">Email</label></td>
+            <td><input type="text" name="email_id" id="email_id"></td>
+        </tr>
+        <tr>
+            <td><label for="password">Password</label></td>
+            <td><input type="password" name="password" id="password"></td>
+        </tr>
+        <tr>
+            <td><label for="confirm_password">Confirm Password</label></td>
+            <td><input type="password" name="confirm_password" id="confirm_password"></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Company Details</h3>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="company_name">Company Name</label></td>
+            <td><input type="text" name="company_name" id="company_name"></td>
+        </tr>
+        <tr>
+            <td><label for="company_email">Company Email</label></td>
+            <td><input type="text" name="company_email" id="company_email"></td>
+        </tr>
+        <tr>
+            <td><label for="company_address">Company Address</label></td>
+            <td><input type="text" name="company_address" id="company_address"></td>
+        </tr>
+        <tr>
+            <td><label for="company_website">Company Website</label></td>
+            <td><input type="text" name="company_website" id="company_website"></td>
+        </tr>
+        <tr>
+            <td><label for="company_contact">Company Contact Number</label></td>
+            <td><input type="text" name="company_contact" id="company_contact"></td>
+        </tr>
+        <tr>
+            <td><label for="contact_person_name">Contact Person Name</label></td>
+            <td><input type="text" name="contact_person_name" id="contact_person_name"></td>
+        </tr>
+        <tr>
+            <td><label for="contact_person_designation">Contact Person Designation</label></td>
+            <td><input type="text" name="contact_person_designation" id="contact_person_designation"></td>
+        </tr>
+        <tr>
+            <td><label for="contact_person_phone">Contact Person Phone</label></td>
+            <td><input type="text" name="contact_person_phone" id="contact_person_phone"></td>
+        </tr>
+        <tr>
+            <td><label for="contact_person_email">Contact Person Email</label></td>
+            <td><input type="text" name="contact_person_email" id="contact_person_email"></td>
+        </tr>
+        <tr>
+            <td>
+                <button type="submit">SignUp</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a href="./login">Login</a></p>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

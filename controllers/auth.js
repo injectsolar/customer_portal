@@ -46,6 +46,13 @@ router.get('/signup', function (req, res, next) {
     res.render('signup.ejs', {message: req.flash('signupMessage'), user: null});
 });
 
+router.get('/epc_signup', function (req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/');
+    }
+    res.render('signup_epc.ejs', {message: req.flash('signupMessage'), user: null});
+});
+
 router.get('/logout', function (req, res, next) {
     req.logout();
     res.redirect('/login');
@@ -64,6 +71,23 @@ router.post('/signup', function (req, res, next) {
         }
         if (!user) {
             return res.redirect('/signup');
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/');
+        });
+    })(req, res, next);
+});
+
+router.post('/epc_signup', function (req, res, next) {
+    passport.authenticate('local-epc-signup', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.redirect('/epc_signup');
         }
         req.logIn(user, function (err) {
             if (err) {
