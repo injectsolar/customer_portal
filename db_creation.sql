@@ -63,34 +63,36 @@ FOR EACH ROW
 EXECUTE PROCEDURE public.update_modified_column();
 
 
--- Table: device_ids
+-- Table: public.device_ids
 
--- DROP TABLE device_ids;
+-- DROP TABLE public.device_ids;
 
-CREATE TABLE device_ids
+CREATE TABLE public.device_ids
 (
   id            SERIAL                NOT NULL,
   device_id_str CHARACTER VARYING(75) NOT NULL,
   users_id      INTEGER,
+  CONSTRAINT id_device_ids_primary_key PRIMARY KEY (id),
   CONSTRAINT device_user_id_foreign_key FOREIGN KEY (users_id)
-  REFERENCES people_details (id) MATCH SIMPLE
+  REFERENCES public.people_details (id) MATCH SIMPLE
   ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT device_id_str_unique UNIQUE (device_id_str)
 )
 WITH (
 OIDS =FALSE
 );
-ALTER TABLE device_ids
+ALTER TABLE public.device_ids
 OWNER TO postgres;
 
--- Index: fki_device_user_id_foreign_key
+-- Index: public.fki_device_user_id_foreign_key
 
--- DROP INDEX fki_device_user_id_foreign_key;
+-- DROP INDEX public.fki_device_user_id_foreign_key;
 
 CREATE INDEX fki_device_user_id_foreign_key
-ON device_ids
+ON public.device_ids
 USING BTREE
 (users_id);
+
 
 -- Table: server_key_values
 
@@ -211,3 +213,61 @@ ON password_change_requests
 FOR EACH ROW
 EXECUTE PROCEDURE public.update_modified_column();
 
+-- Table: public.epc_users
+
+-- DROP TABLE public.epc_users;
+
+CREATE TABLE public.epc_users
+(
+  id SERIAL NOT NULL,
+  users_id integer NOT NULL,
+  company_email character varying(50) NOT NULL,
+  company_name character varying(100) NOT NULL,
+  company_website character varying(100) NOT NULL,
+  company_address character varying(300) NOT NULL,
+  company_contact character varying(50) NOT NULL,
+  contact_person_name character varying(150) NOT NULL,
+  contact_person_designation character varying(100) NOT NULL,
+  contact_person_email character varying(100) NOT NULL,
+  contact_person_phone character varying(50) NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT id_epc_users_primary_key PRIMARY KEY (id),
+  CONSTRAINT fk_epc_users_id_people_details_id FOREIGN KEY (users_id)
+  REFERENCES public.device_ids (id) MATCH SIMPLE
+  ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+OIDS=FALSE
+);
+ALTER TABLE public.epc_users
+OWNER TO postgres;
+
+-- Index: public.fki_epc_users_id_people_details_id
+
+-- DROP INDEX public.fki_epc_users_id_people_details_id;
+
+CREATE INDEX fki_epc_users_id_people_details_id
+ON public.epc_users
+USING btree
+(users_id);
+
+-- Index: public.id_epc_users_primary
+
+-- DROP INDEX public.id_epc_users_primary;
+
+CREATE INDEX id_epc_users_primary
+ON public.epc_users
+USING btree
+(id);
+
+
+-- Trigger: update_epc_users_updated_time on public.epc_users
+
+-- DROP TRIGGER update_epc_users_updated_time ON public.epc_users;
+
+CREATE TRIGGER update_epc_users_updated_time
+BEFORE UPDATE
+ON public.epc_users
+FOR EACH ROW
+EXECUTE PROCEDURE public.update_modified_column();
