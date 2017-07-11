@@ -18,47 +18,60 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
--- Table: people_details
+-- Table: public.people_details
 
--- DROP TABLE people_details;
+-- DROP TABLE public.people_details;
 
-CREATE TABLE people_details
+CREATE TABLE public.people_details
 (
   email             CHARACTER VARYING(50)    NOT NULL,
-  id                SERIAL                   NOT NULL,
+  id                INTEGER                  NOT NULL DEFAULT nextval('people_details_id_seq' :: REGCLASS),
   password          CHARACTER VARYING(100)   NOT NULL,
   username          CHARACTER VARYING(100)   NOT NULL,
-  role              INTEGER DEFAULT 0        NOT NULL,
+  role_str          INTEGER                  NOT NULL DEFAULT 0,
   is_email_verified BOOLEAN                  NOT NULL DEFAULT FALSE,
   created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  epc_users_id      INTEGER,
   CONSTRAINT id_primary_key PRIMARY KEY (id),
+  CONSTRAINT fk_poeple_details_epc_users_id FOREIGN KEY (epc_users_id)
+  REFERENCES public.epc_users (id) MATCH SIMPLE
+  ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT email_unique UNIQUE (email),
   CONSTRAINT username_unique UNIQUE (username)
 )
 WITH (
 OIDS =FALSE
 );
-ALTER TABLE people_details
+ALTER TABLE public.people_details
 OWNER TO postgres;
 
--- Index: id_primary
+-- Index: public.fki_poeple_details_epc_users_id
 
--- DROP INDEX id_primary;
+-- DROP INDEX public.fki_poeple_details_epc_users_id;
+
+CREATE INDEX fki_poeple_details_epc_users_id
+ON public.people_details
+USING BTREE
+(epc_users_id);
+
+-- Index: public.id_primary
+
+-- DROP INDEX public.id_primary;
 
 CREATE INDEX id_primary
-ON people_details
+ON public.people_details
 USING BTREE
 (id);
 
 
--- Trigger: update_user_updated_time on people_details
+-- Trigger: update_user_updated_time on public.people_details
 
--- DROP TRIGGER update_user_updated_time ON people_details;
+-- DROP TRIGGER update_user_updated_time ON public.people_details;
 
 CREATE TRIGGER update_user_updated_time
 BEFORE UPDATE
-ON people_details
+ON public.people_details
 FOR EACH ROW
 EXECUTE PROCEDURE public.update_modified_column();
 
@@ -219,26 +232,26 @@ EXECUTE PROCEDURE public.update_modified_column();
 
 CREATE TABLE public.epc_users
 (
-  id SERIAL NOT NULL,
-  users_id integer NOT NULL,
-  company_email character varying(50) NOT NULL,
-  company_name character varying(100) NOT NULL,
-  company_website character varying(100) NOT NULL,
-  company_address character varying(300) NOT NULL,
-  company_contact character varying(50) NOT NULL,
-  contact_person_name character varying(150) NOT NULL,
-  contact_person_designation character varying(100) NOT NULL,
-  contact_person_email character varying(100) NOT NULL,
-  contact_person_phone character varying(50) NOT NULL,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  id                         INTEGER                  NOT NULL DEFAULT nextval('epc_users_id_seq' :: REGCLASS),
+  users_id                   INTEGER                  NOT NULL,
+  company_email              CHARACTER VARYING(50)    NOT NULL,
+  company_name               CHARACTER VARYING(100)   NOT NULL,
+  company_website            CHARACTER VARYING(100)   NOT NULL,
+  company_address            CHARACTER VARYING(300)   NOT NULL,
+  company_contact            CHARACTER VARYING(50)    NOT NULL,
+  contact_person_name        CHARACTER VARYING(150)   NOT NULL,
+  contact_person_designation CHARACTER VARYING(100)   NOT NULL,
+  contact_person_email       CHARACTER VARYING(100)   NOT NULL,
+  contact_person_phone       CHARACTER VARYING(50)    NOT NULL,
+  created_at                 TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at                 TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT id_epc_users_primary_key PRIMARY KEY (id),
   CONSTRAINT fk_epc_users_id_people_details_id FOREIGN KEY (users_id)
   REFERENCES public.device_ids (id) MATCH SIMPLE
   ON UPDATE CASCADE ON DELETE CASCADE
 )
 WITH (
-OIDS=FALSE
+OIDS =FALSE
 );
 ALTER TABLE public.epc_users
 OWNER TO postgres;
@@ -249,7 +262,7 @@ OWNER TO postgres;
 
 CREATE INDEX fki_epc_users_id_people_details_id
 ON public.epc_users
-USING btree
+USING BTREE
 (users_id);
 
 -- Index: public.id_epc_users_primary
@@ -258,7 +271,7 @@ USING btree
 
 CREATE INDEX id_epc_users_primary
 ON public.epc_users
-USING btree
+USING BTREE
 (id);
 
 
@@ -271,3 +284,4 @@ BEFORE UPDATE
 ON public.epc_users
 FOR EACH ROW
 EXECUTE PROCEDURE public.update_modified_column();
+

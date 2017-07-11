@@ -37,7 +37,7 @@ passport.use('local-signup', new LocalStrategy({
                         return done(null, false, req.flash('signupMessage', "password is weak"));
                     }
                     // Create a new User
-                    User.create(username, User.generateHash(password), userEmail, function (err, userId) {
+                    User.create(username, User.generateHash(password), userEmail, null, null, function (err, userId) {
                         if (err) {
                             //return done(err);
                             return done(null, false, req.flash('signupMessage', JSON.stringify(err)));
