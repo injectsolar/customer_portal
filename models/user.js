@@ -1,7 +1,7 @@
 var squel = require('squel').useFlavour('postgres');
 var pool = require('../config/db');
 //var bcrypt = require("bcrypt");
-var tableName = "people_details.people_details";
+var tableName = "people_details";
 
 module.exports.create = function (usernameIn, passwordIn, emailIn, done) {
     var username = usernameIn.trim();

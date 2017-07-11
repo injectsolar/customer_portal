@@ -98,7 +98,7 @@ db.query("SELECT NOW()", [], function (err, res) {
 var setCredentials = function () {
     var select_sql =
         squel.select()
-            .from("people_details.server_key_values")
+            .from("server_key_values")
             .toParam();
     db.query(select_sql.text, select_sql.values, function (err, res) {
         if (err) {

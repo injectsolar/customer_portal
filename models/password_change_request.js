@@ -3,7 +3,7 @@ var pool = require('../config/db');
 var crypto = require('crypto');
 var User = require('./user');
 var async = require('async');
-var tableName = "people_details.password_change_requests";
+var tableName = "password_change_requests";
 var tableColumns = ["id", "users_id", "token", "expires_at", "created_at", "updated_at"];
 
 module.exports.create = function (user_id, done) {
