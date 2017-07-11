@@ -3,12 +3,14 @@ var pool = require('../config/db');
 //var bcrypt = require("bcrypt");
 var tableName = "people_details";
 
-module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUserIdIn, done) {
+module.exports.tableName = tableName;
+
+module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUserIdIn, done, client) {
     var username = usernameIn.trim();
     var password = passwordIn.trim();
     var email = emailIn.trim();
-    var role = (roleIn == null) ? null : roleIn.trim();
-    var epcUserId = (epcUserIdIn == null) ? null : epcUserIdIn.trim();
+    var role = (roleIn == null) ? null : roleIn;
+    var epcUserId = (epcUserIdIn == null) ? null : epcUserIdIn;
     var insert_sql =
         squel.insert()
             .into(tableName)
@@ -24,7 +26,11 @@ module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUs
     insert_sql = insert_sql
         .returning("*")
         .toParam();
-    pool.query(insert_sql.text, insert_sql.values, function (err, res) {
+    var conn = pool;
+    if (client) {
+        conn = client;
+    }
+    conn.query(insert_sql.text, insert_sql.values, function (err, res) {
         if (err) {
             console.error('error running user INSERT query', err);
             return done(err);

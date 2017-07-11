@@ -1,5 +1,6 @@
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
+var EpcUser = require('../models/epc_user');
 var passport = require('passport');
 var Email_Token = require('../models/email_token');
 var Email_Helper = require('../helpers/mailHelper');
@@ -101,8 +102,8 @@ passport.use('local-epc-signup', new LocalStrategy({
                     if (!User.isPasswordFit(password)) {
                         return done(null, false, req.flash('signupMessage', "password is weak"));
                     }
-                    // Create a new User
-                    User.create(username, User.generateHash(password), userEmail, null, null, function (err, userId) {
+                    // Create a new EpcUser
+                    EpcUser.create(username, User.generateHash(password), userEmail, null, null, req.param('company_name'), req.param('company_email'), req.param('company_address'), req.param('company_website'), req.param('company_contact'), req.param('contact_person_name'), req.param('contact_person_designation'), req.param('contact_person_email'), req.param('contact_person_phone'), function (err, userId) {
                         if (err) {
                             //return done(err);
                             return done(null, false, req.flash('signupMessage', JSON.stringify(err)));
