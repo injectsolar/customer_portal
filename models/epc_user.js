@@ -50,12 +50,12 @@ module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUs
                     }
                     //console.log('EPC Insert result ======>', res);
                     client.query('COMMIT', function (err, commitDone) {
+                        tranDone();
                         if (res.rows.length == 0) {
                             done(null, null);
                         } else {
                             done(null, res.rows[0]['users_id']);
                         }
-                        tranDone();
                     });
                 });
             }, client);
