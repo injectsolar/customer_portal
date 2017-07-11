@@ -28,7 +28,7 @@ module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUs
                     return rollback(client, tranDone);
                 }
                 var insert_sql = squel.insert()
-                    .into('epc_users')
+                    .into(tableName)
                     .set('users_id', userId)
                     .set('company_name', companyName)
                     .set('company_email', companyEmail)
@@ -65,7 +65,7 @@ module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUs
 
 // todo function for get
 module.exports.get = function (id, done) {
-  
+
 };
 // todo function for getByUsername
 
