@@ -105,6 +105,75 @@ router.post('/epc_signup', function (req, res, next) {
     })(req, res, next);
 });
 
+router.post('/signup_client', function (req, res, next) {
+    var userEmail = req.body('email_id');
+    var userName = req.body('username');
+    var userPassword = req.body('password');
+    var userConfirmPassword = req.body('confirm_password');
+    User.getByUsernameOrEmail(userName, userEmail, function (err, users) {
+        if (err) {
+            //return done(err);
+            return done(null, false, req.flash('signupMessage', JSON.stringify(err)));
+        }
+        if (users[0]) {
+            req.flash('signupMessage', 'The client username/email is already taken');
+            return res.render('signup_client');
+        } else {
+            if (userPassword != userConfirmPassword) {
+                req.flash('signupMessage', "client password and confirm password fields did not match");
+                return res.render('signup_client');
+            }
+            if (!User.isPasswordFit(password)) {
+                req.flash('signupMessage', "client password is weak");
+                return res.render('signup_client');
+            }
+            // Create a new User
+            User.create(userName, User.generateHash(userPassword), userEmail, null, null, function (err, userId) {
+                if (err) {
+                    //return done(err);
+                    req.flash('signupMessage', JSON.stringify(err));
+                    return res.render('signup_client');
+                }
+                // Create the verification token table entry
+                Email_Token.create(userId, function (err, tokenObj) {
+                    if (err) {
+                        //return done(err);
+                        req.flash('signupMessage', "Client signup created but email verification not sent to the client due to error: " + JSON.stringify(err));
+                        return res.render('signup_client');
+                    }
+                    //Use token id to get the user id and using user id get the user email address
+                    var token = tokenObj.token;
+                    var user_id = tokenObj.users_id;
+                    // get the user by his token table users_id
+                    User.get(user_id, function (err, users) {
+                        if (err) {
+                            req.flash('signupMessage', "Unable to retrieve signed up user due to error: " + JSON.stringify(err));
+                            return res.render('signup_client');
+                        }
+                        //user id obtained
+                        var userEmail = users[0].email;
+                        var userName = users[0].username;
+                        var fromAddress = 'info@injectsolar.com';
+                        var subject = 'User Email Verification';
+                        var html = "Dear " + userName + ", <br> Click the following link to verify your email <br><br> " + "http://localhost:3000/verify_email?token=" + token;
+                        // Send user verification email to the user
+                        Email_Helper.sendMailViaGmail(fromAddress, userEmail, subject, html, function (err, response) {
+                            if (err) {
+                                req.flash('signupMessage', "User Verification mail couldn't be sent, send again later");
+                                res.render("signup_client");
+                            }
+                            console.log("Gmail send verification email response is" + JSON.stringify(response));
+                            req.flash('signupMessage', "Client Verification mail sent, please ask client to check email");
+                            res.render("signup_client");
+                        });
+                    });
+                });
+            });
+        }
+    });
+
+});
+
 router.get('/verify_email', function (req, res, next) {
     var token = req.query.token;
     // check for valid token
