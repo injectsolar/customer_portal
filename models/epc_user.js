@@ -63,10 +63,24 @@ module.exports.create = function (usernameIn, passwordIn, emailIn, roleIn, epcUs
     });
 };
 
-// todo function for get
-module.exports.get = function (id, done) {
-
+module.exports.getByUserId = function (userId, done, client) {
+    var select_sql = squel.select().from('epc_users').where('users_id=?', userId).toParam();
+    var conn = client;
+    if (conn == null) {
+        conn = pool;
+    }
+    conn.query(select_sql.text, select_sql.values, function (err, res) {
+        if (err) {
+            console.error('error running epc user getByUserId query', err);
+            return done(err);
+        }
+        //console.log('SELECT result ======>', res);
+        done(null, res.rows);
+    });
 };
+
+// todo function for get
+
 // todo function for getByUsername
 
 //todo function for getByEmail
