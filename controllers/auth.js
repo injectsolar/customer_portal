@@ -53,6 +53,13 @@ router.get('/epc_signup', function (req, res, next) {
     res.render('signup_epc.ejs', {message: req.flash('signupMessage'), user: null});
 });
 
+router.get('/signup_client', function (req, res, next) {
+    if (req.isAuthenticated() && req.user.role_str == 1) {
+        return res.render('signup_client.ejs', {message: req.flash('signupMessage'), user: null});
+    }
+    res.redirect('/');
+});
+
 router.get('/logout', function (req, res, next) {
     req.logout();
     res.redirect('/login');

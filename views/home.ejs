@@ -21,9 +21,13 @@
 <% } else { %>
 <% if(user.is_email_verified != true){ %>
 <p>Please verify your email by clicking on the verification link sent to your email</p>
-
 <p>If email not received <a href="./resend_email_verification">Resend Verification Link</a></p>
 <% } %>
+
+<% if(user.role_str == 1){ %>
+<p><a href="./signup_client">Sign Up Client</a></p>
+<%}%>
+
 <a href="./change_password">Change Password</a>
 <a href="./logout">LogOut</a>
 <% } %>
