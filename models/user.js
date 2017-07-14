@@ -115,6 +115,25 @@ module.exports.getByUsernameOrEmail = function (userNamesArray, emailsArray, don
     });
 };
 
+module.exports.getByEpcUsersId = function (epc_users_id, done, client) {
+    var select_sql = squel.select()
+        .from(tableName)
+        .where('epc_users_id=?', epc_users_id)
+        .toParam();
+    var conn = client;
+    if (conn == null) {
+        conn = pool;
+    }
+    conn.query(select_sql.text, select_sql.values, function (err, res) {
+        if (err) {
+            console.error('error running user getByEpcUsersId query', err);
+            return done(err);
+        }
+        console.log('SELECT result ======>', res);
+        done(null, res.rows);
+    });
+};
+
 module.exports.updateById = function (userId, updateObject, done) {
     var update_sql =
         squel.update()

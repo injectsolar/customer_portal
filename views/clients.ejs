@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>Clients List Page</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<% if (user != undefined) { %>
+<h1>Clients of <%= user.username %></h1>
+<% } %>
+<!-- show any messages that come back with authentication -->
+<% if (message != undefined && message.length > 0) { %>
+<p style="color: red"><%= message %></p>
+<% } %>
+<% if(user != undefined){ %>
+<% if(user.is_email_verified != true){ %>
+<p>Please verify your email by clicking on the verification link sent to your email</p>
+
+<p>If email not received <a href="./resend_email_verification">Resend Verification Link</a></p>
+<% } %>
+<% if (clientList != undefined && clientList.constructor == Array) { %>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>Email</td>
+    </tr>
+    <% for(var i = 0; i < clientList.length; i++) { %>
+    <tr>
+        <td><%= clientList[i].username %></td>
+        <td><%= clientList[i].email %></td>
+    </tr>
+    <% } %>
+</table>
+<% } %>
+<p><a href="./home">Home</a></p>
+<% } %>
+</body>
+</html>

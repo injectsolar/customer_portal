@@ -1,0 +1,73 @@
+<html>
+<head>
+    <title>EPC Person Details Page</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<% if (typeof user != "undefined") { %>
+<h1>EPC Person of <%= user.username %></h1>
+<% } %>
+<!-- show any messages that come back with authentication -->
+<% if (message.length > 0) { %>
+<p style="color: red"><%= message %></p>
+<% } %>
+<% if(user != undefined){ %>
+<% if(user.is_email_verified != true){ %>
+<p>Please verify your email by clicking on the verification link sent to your email</p>
+
+<p>If email not received <a href="./resend_email_verification">Resend Verification Link</a></p>
+<% } %>
+<% if(epc_person != undefined){ %>
+<table>
+    <tr>
+        <td>Name</td>
+        <td><%= epc_person.username %></td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td><%= epc_person.email %></td>
+    </tr>
+    <tr>
+        <td>Company</td>
+        <td><%= epc_person.company_name %></td>
+    </tr>
+    <tr>
+        <td>Company Email</td>
+        <td><%= epc_person.company_email %></td>
+    </tr>
+    <tr>
+        <td>Company Address</td>
+        <td><%= epc_person.company_address %></td>
+    </tr>
+    <tr>
+        <td>Company Website</td>
+        <td><%= epc_person.company_website %></td>
+    </tr>
+    <tr>
+        <td>Company Contact</td>
+        <td><%= epc_person.company_contact %></td>
+    </tr>
+    <tr>
+        <td>Company Contact Person Name</td>
+        <td><%= epc_person.contact_person_name %></td>
+    </tr>
+    <tr>
+        <td>Company Contact Person Designation</td>
+        <td><%= epc_person.contact_person_designation %></td>
+    </tr>
+    <tr>
+        <td>Company Contact Person Email</td>
+        <td><%= epc_person.contact_person_email %></td>
+    </tr>
+    <tr>
+        <td>Company Contact Person Phone</td>
+        <td><%= epc_person.contact_person_phone %></td>
+    </tr>
+</table>
+
+<% } %>
+<% } %>
+<p><a href="./home">Home</a></p>
+</body>
+</html>

@@ -61,6 +61,51 @@ router.get('/signup_client', function (req, res, next) {
     res.redirect('/');
 });
 
+router.get('/clients', function (req, res, next) {
+    if (req.isAuthenticated() && req.user.role_str == 1) {
+        EPCUser.getByUserId(req.user.id, function (err, rows) {
+            if (err) {
+                return next(err);
+            }
+            if (rows.length == 0) {
+                return next(new Error("Epc details are not found..."));
+            }
+            User.getByEpcUsersId(rows[0].id, function (err, clientList) {
+                if (err) {
+                    return next(err);
+                }
+                return res.render('clients.ejs', {
+                    message: req.flash('message'),
+                    user: req.user,
+                    clientList: clientList
+                });
+            }, null);
+        }, null);
+    } else {
+        res.redirect('/home');
+    }
+});
+
+router.get('/epc_person', function (req, res, next) {
+    if (req.isAuthenticated() && req.user.role_str == 0) {
+        EPCUser.getDetailedById(req.user.epc_users_id, function (err, rows) {
+            if (err) {
+                return next(err);
+            }
+            if (rows.length == 0) {
+                return next(new Error("Epc details are not found..."));
+            }
+            return res.render('epc_person.ejs', {
+                message: req.flash('message'),
+                user: req.user,
+                epc_person: rows[0]
+            });
+        }, null);
+    } else {
+        res.redirect('/home');
+    }
+});
+
 router.get('/logout', function (req, res, next) {
     req.logout();
     res.redirect('/login');

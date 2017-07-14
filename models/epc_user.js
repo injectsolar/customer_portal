@@ -79,7 +79,49 @@ module.exports.getByUserId = function (userId, done, client) {
     });
 };
 
-// todo function for get
+module.exports.getById = function (id, done, client) {
+    var select_sql = squel.select().from('epc_users').where('id=?', id).toParam();
+    var conn = client;
+    if (conn == null) {
+        conn = pool;
+    }
+    conn.query(select_sql.text, select_sql.values, function (err, res) {
+        if (err) {
+            console.error('error running epc user getById query', err);
+            return done(err);
+        }
+        //console.log('SELECT result ======>', res);
+        done(null, res.rows);
+    });
+};
+
+module.exports.getDetailedById = function (id, done, client) {
+    var select_sql = squel.select()
+        .field("epc_users.*")
+        .field(User.tableName + ".username")
+        .field(User.tableName + ".email")
+        .field(User.tableName + ".role_str")
+        .field(User.tableName + ".is_email_verified")
+        .field(User.tableName + ".created_at")
+        .field(User.tableName + ".updated_at")
+        .from('epc_users')
+        .join(User.tableName, null, "epc_users.users_id = " + User.tableName + ".id")
+        .where('epc_users.id=?', id)
+        .toParam();
+    var conn = client;
+    if (conn == null) {
+        conn = pool;
+    }
+    conn.query(select_sql.text, select_sql.values, function (err, res) {
+        if (err) {
+            console.error('error running epc user getDetailedById query', err);
+            return done(err);
+        }
+        //console.log('SELECT result ======>', res);
+        done(null, res.rows);
+    });
+};
+
 
 // todo function for getByUsername
 
