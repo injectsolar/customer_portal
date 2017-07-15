@@ -129,7 +129,7 @@ module.exports.getByEpcUsersId = function (epc_users_id, done, client) {
             console.error('error running user getByEpcUsersId query', err);
             return done(err);
         }
-        console.log('SELECT result ======>', res);
+        //console.log('SELECT result getByEpcUsersId======>', res);
         done(null, res.rows);
     });
 };
