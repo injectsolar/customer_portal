@@ -12,13 +12,13 @@
 <% if (message.length > 0) { %>
 <p style="color: red"><%= message %></p>
 <% } %>
-<% if(user != undefined){ %>
+<% if(typeof user != "undefined"){ %>
 <% if(user.is_email_verified != true){ %>
 <p>Please verify your email by clicking on the verification link sent to your email</p>
 
 <p>If email not received <a href="./resend_email_verification">Resend Verification Link</a></p>
 <% } %>
-<% if(epc_person != undefined){ %>
+<% if(typeof epc_person != "undefined"){ %>
 <table>
     <tr>
         <td>Name</td>

@@ -26,13 +26,12 @@
 <% } %>
 
 <% if(user.role_str == 1){ %>
-<!-- TODO controller-->
 <p><a href="./clients">View Clients</a></p>
 
 <p><a href="./signup_client">Sign Up Client</a></p>
-<% } else if(epc_person && epc_person.username){ %>
+<% } else if(typeof epc_person != "undefined" && epc_person.username){ %>
 <p>Your EPC person is <%= epc_person.username %></p>
-<!-- TODO controller-->
+
 <p><a href="./epc_person">View EPC_Person Details</a></p>
 
 <% } %>
